@@ -1,0 +1,24 @@
+install.packages("klaR")
+library(klaR)
+# Import Data
+training <- read.csv('https://raw.githubusercontent.com/selva86/datasets/master/iris_train.csv')
+test <- read.csv('https://raw.githubusercontent.com/selva86/datasets/master/iris_test.csv')
+nb_mod <- NaiveBayes(Species ~ ., data=training)
+pred <- predict(nb_mod, test)
+# Confusion Matrix
+tab <- table(pred$class, test$Species)
+caret::confusionMatrix(tab)  
+opar = par(mfrow=c(2, 2), mar=c(4,0,0,0))
+plot(nb_mod, main="")  
+par(opar)
+
+# Plot the Confusion Matrix
+library(ggplot2)
+test$pred <- pred$class
+ggplot(test, aes(Species, pred, color = Species)) +
+  geom_jitter(width = 0.2, height = 0.1, size=2) +
+  labs(title="Confusion Matrix", 
+       subtitle="Predicted vs. Observed from Iris dataset", 
+       y="Predicted", 
+       x="Truth",
+       caption="machinelearningplus.com")
